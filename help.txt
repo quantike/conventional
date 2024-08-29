@@ -1,0 +1,32 @@
+Conventional Commit Helper Script
+
+Usage:
+  conventional [--verbose] <command> [options]
+
+Commands:
+  build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test, wip
+      - Makes a commit with the specified type and options.
+  scope, s <scope>
+      - Sets the commit scope. If no scope is provided, the current scope is removed.
+  breaking-change, bc [true|false]
+      - Sets or unsets the breaking change flag. Default is false.
+  message, m <type> [message]
+      - Constructs and displays the commit message based on the provided type and options.
+  reset
+      - Resets all git-conventional configurations.
+  body-file <file-path>
+      - Sets the file path for the commit body.
+  check-wip
+      - Checks if there are any WIP commits in the history.
+  help
+      - Displays this help text.
+
+Options:
+  --verbose
+      - Enables verbose mode, which logs additional details about the script's operations.
+
+Examples:
+  conventional feat "Add new authentication feature"
+  conventional --verbose scope "auth"
+  conventional check-wip
+  conventional reset
