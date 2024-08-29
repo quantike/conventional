@@ -39,7 +39,7 @@ _git_conventional_get_commit() {
 
     if ! _git_conventional_valid_type "$type"; then
         echo "Error: Invalid commit type '$type'" >&2
-        reutrn 1
+        exit 1
     fi
 
     head="$type"
@@ -49,10 +49,10 @@ _git_conventional_get_commit() {
 
     if [ -n "$body_file" ] && [ -f "$body_file" ]; then 
         body=$(cat "$body_file")
-        head="$head"$'\n\n'"$body"
+        head="$head\n\n$body"
     fi
 
-    log "Commit mesasge constructed: $head"
+    log "Conventional commit constructed: $head"
     printf "%s" "$head"
 }
 
