@@ -18,13 +18,13 @@ _git_conventional_valid_type() {
     esac
 }
 
-# Resets all git-conventional configurations 
+# Resets all git-commit-conventional configurations 
 _git_conventional_reset() {
-    git config --local --remove-section git-conventional 2>/dev/null || {
-        echo "No git-conventional configuration found to reset."
+    git config --local --remove-section git-commit-conventional 2>/dev/null || {
+        echo "No git-commit-conventional configuration found to reset."
     }
     log "Configuration reset."
-    echo "git-conventional configurations have been reset."
+    echo "git-commit-conventional configurations have been reset."
 }
 
 # Constructs the commit message based on the provided type and options
@@ -33,9 +33,9 @@ _git_conventional_get_commit() {
     shift 
     local scope breaking_change body_file head body 
     
-    scope=$(git config --local --get git-conventional.scope)
-    breaking_change=$(git config --local --get git-conventional.breaking-change)
-    body_file=$(git config --local --get git-conventional.body-file-path)
+    scope=$(git config --local --get git-commit-conventional.scope)
+    breaking_change=$(git config --local --get git-commit-conventional.breaking-change)
+    body_file=$(git config --local --get git-commit-conventional.body-file-path)
 
     if ! _git_conventional_valid_type "$type"; then
         echo "Error: Invalid commit type '$type'" >&2
@@ -61,11 +61,11 @@ _git_conventional_set_breaking_change() {
     local breaking_change="${1:-false}"
     case "$breaking_change" in 
         true|on|1)
-            git config --local --bool git-conventional.breaking-change true 
+            git config --local --bool git-commit-conventional.breaking-change true 
             echo "Breaking change set to: true"
             ;;
         faslse|off|0)
-            git config --local --unset git-conventional.breaking-change
+            git config --local --unset git-commit-conventional.breaking-change
             echo "Breaking change set to: false"
             ;;
         *)
@@ -83,7 +83,7 @@ _git_conventional_set_body_file() {
         exit 1
     fi
     if [ -f "$file_path" ]; then
-        git config --local --path git-conventional.body-file-path "$file_path" || {
+        git config --local --path git-commit-conventional.body-file-path "$file_path" || {
             echo "Error: Failed to set body file path." >&2
             exit 1
         }
@@ -97,17 +97,13 @@ _git_conventional_set_body_file() {
 # Sets or unsets the commit scope
 _git_conventional_set_scope() {
     local scope="$1"
-    if [ -z "$scope" ]; then 
-        git config --local --unset git-conventional.scope 
-        echo "Scope removed"
-    else 
-        git config --local git-conventional.scope "$scope" || {
-            echo "Error: Failed to set scope." >&2
-            exit 1
-        }
-        
-        echo "Scope changed: $scope"
-    fi 
+    if [ -z "$scope" ]; then
+        git config --local --unset git-commit-conventional.scope
+        log "Scope removed"
+    else
+        git config --local git-commit-conventional.scope "$scope"
+        log "Scope set to $scope"
+    fi
 }
 
 # Commits using the contructed commit message
@@ -134,7 +130,6 @@ _git_conventional_check_for_wip() {
 
 # Displays the help text
 _help() {
-    local help_file="$HOME/.conventional/help.txt"
     if [ -f "$help_file" ]; then
         cat "$help_file"
     else
@@ -145,7 +140,7 @@ _help() {
         echo "  scope|s [scope] - Set or unset the commit scope."
         echo "  breaking-change|bc [true|false] - Set or unset the breaking change flag."
         echo "  message|m [type] [description] - Generate and display the commit message."
-        echo "  reset - Reset all git-conventional configurations."
+        echo "  reset - Reset all git-commit-conventional configurations."
         echo "  body-file [file_path] - Set the file path for the commit body."
         echo "  check-wip - Check for WIP commits in the history."
         echo "  help - Display this help message."
